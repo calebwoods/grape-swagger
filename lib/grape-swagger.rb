@@ -231,7 +231,9 @@ module Grape
             end
 
             def parse_base_path(base_path, request)
-              (base_path.is_a?(Proc) ? base_path.call(request) : base_path) || request.base_path
+              url_scheme = request.env["rack.url_scheme"]
+              (base_path.is_a?(Proc) ? base_path.call(request) : base_path) ||
+                "#{url_scheme}://#{request.env['HTTP_HOST']}#{url_scheme == 'https' ? ':80' : ''}"
             end
           end
         end
